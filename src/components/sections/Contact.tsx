@@ -2,16 +2,10 @@
 
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
-import emailjs from "@emailjs/browser";
 import toast from "react-hot-toast";
 import { Send, Mail, Phone, Linkedin, Loader2, CheckCircle } from "lucide-react";
 import { personalInfo } from "@/data/portfolio";
 import SectionTitle from "@/components/ui/SectionTitle";
-
-// Replace these with your real EmailJS credentials
-const EMAILJS_SERVICE_ID = "service_YOUR_ID";
-const EMAILJS_TEMPLATE_ID = "template_YOUR_ID";
-const EMAILJS_PUBLIC_KEY = "YOUR_PUBLIC_KEY";
 
 export default function Contact() {
   const formRef = useRef<HTMLFormElement>(null);
@@ -24,18 +18,41 @@ export default function Contact() {
 
     setSending(true);
     try {
-      await emailjs.sendForm(
-        EMAILJS_SERVICE_ID,
-        EMAILJS_TEMPLATE_ID,
-        formRef.current,
-        EMAILJS_PUBLIC_KEY
-      );
+      const formData = new FormData(formRef.current);
+      const payload = {
+        name: String(formData.get("from_name") ?? "").trim(),
+        email: String(formData.get("from_email") ?? "").trim(),
+        subject: String(formData.get("subject") ?? "").trim(),
+        message: String(formData.get("message") ?? "").trim(),
+      };
+
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        let errorMessage = "Failed to send. Please email me directly.";
+        try {
+          const data = (await res.json()) as { error?: string };
+          if (data?.error) errorMessage = data.error;
+        } catch {
+          // ignore
+        }
+        throw new Error(errorMessage);
+      }
+
       setSent(true);
       toast.success("Message sent successfully! I'll get back to you soon.");
       formRef.current.reset();
       setTimeout(() => setSent(false), 5000);
-    } catch {
-      toast.error("Failed to send. Please email me directly.");
+    } catch (err) {
+      const message =
+        err instanceof Error && err.message
+          ? err.message
+          : "Failed to send. Please email me directly.";
+      toast.error(message);
     } finally {
       setSending(false);
     }
