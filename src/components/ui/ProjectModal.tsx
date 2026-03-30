@@ -4,8 +4,9 @@ import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   X, Github, ExternalLink, Tag, ChevronRight,
-  CheckCircle2, Layers, Zap,
+  CheckCircle2, Layers, Zap, Calendar, TrendingUp, Award, Sparkles,
 } from "lucide-react";
+import ImageCarousel from "@/components/ui/ImageCarousel";
 import type { Project } from "@/data/portfolio";
 
 interface Props {
@@ -56,248 +57,331 @@ export default function ProjectModal({ project, onClose }: Props) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.97 }}
             transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
-            className="relative w-full max-w-3xl max-h-[88vh] rounded-2xl border border-border-subtle bg-bg-primary shadow-2xl flex flex-col overflow-hidden"
+            className="relative w-full max-w-5xl max-h-[90vh] rounded-3xl border border-border-subtle bg-bg-primary shadow-2xl flex flex-col overflow-hidden"
             onClick={(e) => e.stopPropagation()}
             role="dialog"
             aria-modal="true"
             aria-label={project.title}
           >
-            {/* ── Preview area ──────────────────────────────── */}
-            <div
-              className="relative flex-shrink-0 h-52 sm:h-64 overflow-hidden"
-              style={{
-                background: `linear-gradient(140deg, ${project.accent}1a 0%, ${project.accent}06 55%, var(--bg-primary) 100%)`,
-              }}
-            >
-              {/* Dot grid */}
-              <div
-                className="absolute inset-0"
-                style={{
-                  backgroundImage: `radial-gradient(circle, ${project.accent}30 1px, transparent 1px)`,
-                  backgroundSize: "26px 26px",
-                  opacity: 0.5,
-                }}
-              />
-
-              {/* Glow orb */}
-              <div
-                className="absolute -top-16 right-0 w-80 h-80 rounded-full blur-3xl"
-                style={{ background: project.accent, opacity: 0.1 }}
-              />
-
-              {/* Floating tech chips */}
-              {project.tech.slice(0, 6).map((t, i) => (
-                <motion.span
-                  key={t}
-                  initial={{ opacity: 0, scale: 0.6 }}
-                  animate={{ opacity: 0.8, scale: 1 }}
-                  transition={{ delay: 0.06 + i * 0.07, duration: 0.3, ease: "easeOut" }}
-                  className="absolute text-[10px] font-mono px-2.5 py-1 rounded-lg border pointer-events-none select-none"
-                  style={{
-                    color: project.accent,
-                    borderColor: `${project.accent}35`,
-                    background: `${project.accent}0e`,
-                    backdropFilter: "blur(6px)",
-                    top: CHIP_SLOTS[i]?.top,
-                    left: CHIP_SLOTS[i]?.left,
-                  }}
-                >
-                  {t}
-                </motion.span>
-              ))}
-
-              {/* Browser-chrome dots */}
-              <div className="absolute top-4 left-5 flex items-center gap-1.5">
-                {(["#ff5f57", "#febc2e", "#28c840"] as const).map((c) => (
-                  <div key={c} className="w-2.5 h-2.5 rounded-full opacity-75" style={{ background: c }} />
-                ))}
-              </div>
-
-              {/* Accent bar */}
-              <div
-                className="absolute top-0 left-0 right-0 h-[3px]"
-                style={{ background: `linear-gradient(to right, ${project.accent}, ${project.accent}00)` }}
-              />
-
-              {/* Title block */}
-              <div className="absolute bottom-5 left-6 right-16">
+            {/* ── Ultra Minimal Header (Option 1) ──────────────────── */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle bg-bg-card/50 backdrop-blur-sm">
+              {/* Left: Category Badge + Title */}
+              <div className="flex items-center gap-3 min-w-0 flex-1">
                 <span
-                  className="inline-flex items-center gap-1.5 text-[11px] font-mono mb-2"
-                  style={{ color: project.accent }}
+                  className="inline-flex items-center gap-1.5 text-[10px] font-mono px-2.5 py-1 rounded-lg flex-shrink-0"
+                  style={{ 
+                    color: project.accent,
+                    background: `${project.accent}15`,
+                    border: `1px solid ${project.accent}30`
+                  }}
                 >
                   <Tag size={9} />
                   {project.categoryLabel}
                 </span>
-                <h2 className="text-xl sm:text-2xl font-bold text-text-primary leading-tight">
+                <h2 className="text-base sm:text-lg font-bold text-text-primary truncate">
                   {project.title}
                 </h2>
+                {project.deployment && (
+                  <span className="hidden md:inline-flex text-[9px] text-text-muted font-mono px-2 py-0.5 rounded-md bg-bg-secondary border border-border-subtle">
+                    {project.deployment}
+                  </span>
+                )}
               </div>
 
-              {/* Close */}
+              {/* Right: Close Button */}
               <button
                 onClick={onClose}
-                className="absolute top-3.5 right-4 w-8 h-8 rounded-lg flex items-center justify-center text-text-muted hover:text-text-primary hover:bg-white/10 transition-all"
-                aria-label="Close"
+                className="w-8 h-8 rounded-lg flex items-center justify-center text-text-muted hover:text-text-primary hover:bg-bg-secondary transition-all flex-shrink-0 ml-3"
+                aria-label="Close modal"
               >
                 <X size={16} />
               </button>
             </div>
 
             {/* ── Scrollable content ──────────────────────────── */}
-            <div className="flex-1 overflow-y-auto overscroll-contain p-6 sm:p-8 flex flex-col gap-6">
-              {/* Description */}
-              <p className="text-text-muted text-sm leading-relaxed">
-                {project.description}
-              </p>
+            <div className="flex-1 overflow-y-auto overscroll-contain">
+              {/* Image Carousel Section */}
+              {project.images && project.images.length > 0 && (
+                <div className="px-6 sm:px-8 pt-6 sm:pt-8">
+                  <ImageCarousel 
+                    images={project.images} 
+                    alt={project.title}
+                    accent={project.accent}
+                  />
+                </div>
+              )}
 
-              {/* Action buttons */}
-              <div className="flex flex-wrap gap-3">
-                {project.github ? (
-                  <a
-                    href={project.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-border-subtle bg-bg-card text-text-primary text-sm font-medium hover:border-neon-cyan/40 hover:text-neon-cyan transition-all"
-                  >
-                    <Github size={14} />
-                    View Source
-                  </a>
-                ) : (
-                  <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-border-subtle bg-bg-card text-text-muted text-sm select-none">
-                    <Github size={14} />
-                    Source on Request
-                  </span>
-                )}
-                {project.demo && (
-                  <a
-                    href={project.demo}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-bg-primary text-sm font-semibold hover:opacity-90 transition-opacity"
-                    style={{
-                      background: `linear-gradient(135deg, ${project.accent}, ${project.accent}aa)`,
-                      boxShadow: `0 0 16px ${project.accent}30`,
-                    }}
-                  >
-                    <ExternalLink size={14} />
-                    Live Demo
-                  </a>
-                )}
-                {project.deployment && (
-                  <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-border-subtle text-text-muted text-xs font-mono">
-                    {project.deployment}
-                  </span>
-                )}
-              </div>
-
-              <div className="h-px bg-border-subtle" />
-
-              {/* Two-col layout */}
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
-                {/* Left — features + outcomes */}
-                <div className="md:col-span-3 flex flex-col gap-8">
-                  {/* Key Features */}
-                  <div>
-                    <div className="flex items-center gap-2 mb-5">
-                      <Zap size={13} style={{ color: project.accent }} />
-                      <span className="text-[10px] font-mono text-text-muted uppercase tracking-widest">
-                        Key Features
-                      </span>
+              {/* Main Content Area */}
+              <div className="px-6 sm:px-8 py-6 sm:py-8 flex flex-col gap-8">
+                {/* Description Card with Icon */}
+                <div className="rounded-2xl border border-border-subtle bg-gradient-to-br from-bg-card to-bg-secondary/30 p-6">
+                  <div className="flex items-start gap-4">
+                    <div 
+                      className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                      style={{ 
+                        background: `${project.accent}15`,
+                        border: `1px solid ${project.accent}30`
+                      }}
+                    >
+                      <Sparkles size={18} style={{ color: project.accent }} />
                     </div>
-                    <ul className="flex flex-col gap-4">
-                      {project.highlights.map((h, i) => (
-                        <li key={i} className="flex items-start gap-3">
-                          <span
-                            className="w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 text-[10px] font-bold font-mono mt-px"
-                            style={{
-                              background: `${project.accent}15`,
-                              color: project.accent,
-                              border: `1px solid ${project.accent}28`,
-                            }}
-                          >
-                            {String(i + 1).padStart(2, "0")}
-                          </span>
-                          <p className="text-text-primary text-sm leading-relaxed pt-0.5">{h}</p>
-                        </li>
-                      ))}
-                    </ul>
+                    <div className="flex-1">
+                      <h3 className="text-sm font-bold text-text-primary mb-2 uppercase tracking-wide">
+                        Project Overview
+                      </h3>
+                      <p className="text-text-muted text-sm leading-relaxed">
+                        {project.description}
+                      </p>
+                    </div>
                   </div>
+                </div>
 
-                  {/* Outcomes */}
-                  {project.outcomes && project.outcomes.length > 0 && (
-                    <div>
-                      <div className="flex items-center gap-2 mb-5">
-                        <CheckCircle2 size={13} style={{ color: project.accent }} />
-                        <span className="text-[10px] font-mono text-text-muted uppercase tracking-widest">
-                          Outcomes
-                        </span>
-                      </div>
-                      <ul className="flex flex-col gap-3">
-                        {project.outcomes.map((o, i) => (
-                          <li key={i} className="flex items-start gap-2 text-sm text-text-muted leading-relaxed">
-                            <ChevronRight
-                              size={13}
-                              className="flex-shrink-0 mt-0.5"
-                              style={{ color: project.accent }}
-                            />
-                            {o}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
+                {/* Action buttons - Enhanced */}
+                <div className="flex flex-wrap gap-3">
+                  {project.github ? (
+                    <motion.a
+                      href={project.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      whileHover={{ scale: 1.03, y: -2 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-xl border-2 border-border-subtle bg-bg-card text-text-primary text-sm font-semibold hover:border-neon-cyan/40 hover:text-neon-cyan hover:shadow-lg transition-all"
+                    >
+                      <Github size={16} />
+                      <span>View Source Code</span>
+                    </motion.a>
+                  ) : (
+                    <span className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-xl border-2 border-border-subtle bg-bg-card text-text-muted text-sm font-medium select-none">
+                      <Github size={16} />
+                      <span>Source on Request</span>
+                    </span>
+                  )}
+                  {project.demo && (
+                    <motion.a
+                      href={project.demo}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      whileHover={{ scale: 1.03, y: -2 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-xl text-white text-sm font-bold shadow-lg hover:shadow-xl transition-all"
+                      style={{
+                        background: `linear-gradient(135deg, ${project.accent}, ${project.accent}dd)`,
+                        boxShadow: `0 4px 20px ${project.accent}40`,
+                      }}
+                    >
+                      <ExternalLink size={16} />
+                      <span>Live Demo</span>
+                      <ChevronRight size={14} className="ml-auto" />
+                    </motion.a>
                   )}
                 </div>
 
-                {/* Right — tech + meta */}
-                <div className="md:col-span-2 flex flex-col gap-4">
-                  {/* Tech stack */}
-                  <div className="rounded-xl border border-border-subtle bg-bg-card p-5">
-                    <div className="flex items-center gap-2 mb-4">
-                      <Layers size={13} className="text-text-muted" />
-                      <span className="text-[10px] font-mono text-text-muted uppercase tracking-widest">
-                        Stack
-                      </span>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {project.tech.map((t) => (
-                        <span
-                          key={t}
-                          className="text-xs px-2.5 py-1 rounded-lg bg-bg-secondary text-text-muted font-mono border border-border-subtle"
+                {/* Divider with accent */}
+                <div className="relative h-px bg-gradient-to-r from-transparent via-border-subtle to-transparent">
+                  <div 
+                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full"
+                    style={{ background: project.accent, boxShadow: `0 0 12px ${project.accent}` }}
+                  />
+                </div>
+
+                {/* Two-col layout - Enhanced */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                  {/* Left Column - Features + Outcomes (2/3 width) */}
+                  <div className="lg:col-span-2 flex flex-col gap-8">
+                    {/* Key Features - Enhanced Card */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.1 }}
+                      className="rounded-2xl border border-border-subtle bg-gradient-to-br from-bg-card to-bg-secondary/20 p-6"
+                    >
+                      <div className="flex items-center gap-3 mb-6">
+                        <div 
+                          className="w-9 h-9 rounded-lg flex items-center justify-center"
+                          style={{ background: `${project.accent}15` }}
                         >
-                          {t}
-                        </span>
-                      ))}
-                    </div>
+                          <Zap size={16} style={{ color: project.accent }} />
+                        </div>
+                        <div>
+                          <h3 className="text-base font-bold text-text-primary">Key Features</h3>
+                          <p className="text-xs text-text-muted">Core capabilities & implementation</p>
+                        </div>
+                      </div>
+                      <ul className="flex flex-col gap-4">
+                        {project.highlights.map((h, i) => (
+                          <motion.li
+                            key={i}
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.2 + i * 0.05 }}
+                            className="flex items-start gap-3 group"
+                          >
+                            <span
+                              className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 text-xs font-bold font-mono transition-transform group-hover:scale-110"
+                              style={{
+                                background: `${project.accent}18`,
+                                color: project.accent,
+                                border: `1.5px solid ${project.accent}30`,
+                              }}
+                            >
+                              {String(i + 1).padStart(2, "0")}
+                            </span>
+                            <p className="text-text-primary text-sm leading-relaxed pt-1">{h}</p>
+                          </motion.li>
+                        ))}
+                      </ul>
+                    </motion.div>
+
+                    {/* Outcomes - Enhanced Card */}
+                    {project.outcomes && project.outcomes.length > 0 && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                        className="rounded-2xl border border-border-subtle bg-gradient-to-br from-bg-card to-bg-secondary/20 p-6"
+                      >
+                        <div className="flex items-center gap-3 mb-6">
+                          <div 
+                            className="w-9 h-9 rounded-lg flex items-center justify-center"
+                            style={{ background: `${project.accent}15` }}
+                          >
+                            <Award size={16} style={{ color: project.accent }} />
+                          </div>
+                          <div>
+                            <h3 className="text-base font-bold text-text-primary">Project Outcomes</h3>
+                            <p className="text-xs text-text-muted">Results & achievements</p>
+                          </div>
+                        </div>
+                        <ul className="flex flex-col gap-3.5">
+                          {project.outcomes.map((o, i) => (
+                            <motion.li
+                              key={i}
+                              initial={{ opacity: 0, x: -10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: 0.3 + i * 0.05 }}
+                              className="flex items-start gap-3 group"
+                            >
+                              <div 
+                                className="w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0 mt-0.5 transition-transform group-hover:scale-110"
+                                style={{ background: `${project.accent}18` }}
+                              >
+                                <CheckCircle2
+                                  size={12}
+                                  style={{ color: project.accent }}
+                                />
+                              </div>
+                              <p className="text-sm text-text-muted leading-relaxed">{o}</p>
+                            </motion.li>
+                          ))}
+                        </ul>
+                      </motion.div>
+                    )}
                   </div>
 
-                  {/* Metadata */}
-                  <div className="rounded-xl border border-border-subtle bg-bg-card p-5 flex flex-col gap-4 text-sm">
-                    <div>
-                      <p className="text-[10px] text-text-muted font-mono mb-1.5">CATEGORY</p>
-                      <p className="font-semibold" style={{ color: project.accent }}>
-                        {project.categoryLabel}
-                      </p>
-                    </div>
-                    {project.deployment && (
+                  {/* Right Column - Tech Stack + Metadata (1/3 width) */}
+                  <div className="lg:col-span-1 flex flex-col gap-5">
+                    {/* Tech Stack - Premium Card */}
+                    <motion.div
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.15 }}
+                      className="rounded-2xl border border-border-subtle bg-gradient-to-br from-bg-card to-bg-secondary/30 p-6"
+                    >
+                      <div className="flex items-center gap-3 mb-5">
+                        <div 
+                          className="w-8 h-8 rounded-lg flex items-center justify-center"
+                          style={{ background: `${project.accent}15` }}
+                        >
+                          <Layers size={14} style={{ color: project.accent }} />
+                        </div>
+                        <div>
+                          <h3 className="text-sm font-bold text-text-primary">Tech Stack</h3>
+                          <p className="text-[10px] text-text-muted">{project.tech.length} technologies</p>
+                        </div>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {project.tech.map((t, i) => (
+                          <motion.span
+                            key={t}
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: 0.25 + i * 0.03 }}
+                            whileHover={{ scale: 1.05, y: -2 }}
+                            className="text-xs px-3 py-1.5 rounded-lg font-mono border transition-all cursor-default"
+                            style={{
+                              background: `${project.accent}08`,
+                              borderColor: `${project.accent}25`,
+                              color: project.accent
+                            }}
+                          >
+                            {t}
+                          </motion.span>
+                        ))}
+                      </div>
+                    </motion.div>
+
+                    {/* Project Metadata - Info Cards */}
+                    <motion.div
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.2 }}
+                      className="rounded-2xl border border-border-subtle bg-gradient-to-br from-bg-card to-bg-secondary/30 p-5 flex flex-col gap-5"
+                    >
+                      {/* Category */}
                       <div>
-                        <p className="text-[10px] text-text-muted font-mono mb-1.5">DEPLOYMENT</p>
-                        <p className="text-text-primary">{project.deployment}</p>
+                        <div className="flex items-center gap-2 mb-2">
+                          <Tag size={12} className="text-text-muted" />
+                          <p className="text-[10px] text-text-muted font-mono font-semibold uppercase tracking-widest">
+                            Category
+                          </p>
+                        </div>
+                        <p className="font-bold text-sm" style={{ color: project.accent }}>
+                          {project.categoryLabel}
+                        </p>
                       </div>
-                    )}
-                    <div>
-                      <p className="text-[10px] text-text-muted font-mono mb-1.5">TECHNOLOGIES</p>
-                      <p className="text-text-primary">{project.tech.length} in stack</p>
-                    </div>
-                    <div>
-                      <p className="text-[10px] text-text-muted font-mono mb-1.5">STATUS</p>
-                      <div className="flex items-center gap-2">
-                        <span
-                          className="w-1.5 h-1.5 rounded-full animate-pulse"
-                          style={{ background: project.accent }}
-                        />
-                        <p className="text-text-primary">Completed</p>
+
+                      {/* Deployment */}
+                      {project.deployment && (
+                        <>
+                          <div className="h-px bg-gradient-to-r from-border-subtle to-transparent" />
+                          <div>
+                            <div className="flex items-center gap-2 mb-2">
+                              <TrendingUp size={12} className="text-text-muted" />
+                              <p className="text-[10px] text-text-muted font-mono font-semibold uppercase tracking-widest">
+                                Deployment
+                              </p>
+                            </div>
+                            <p className="text-text-primary text-sm font-semibold">
+                              {project.deployment}
+                            </p>
+                          </div>
+                        </>
+                      )}
+
+                      {/* Status */}
+                      <div className="h-px bg-gradient-to-r from-border-subtle to-transparent" />
+                      <div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <Calendar size={12} className="text-text-muted" />
+                          <p className="text-[10px] text-text-muted font-mono font-semibold uppercase tracking-widest">
+                            Status
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2.5">
+                          <div className="relative">
+                            <span
+                              className="w-2 h-2 rounded-full block animate-pulse"
+                              style={{ background: project.accent }}
+                            />
+                            <span
+                              className="absolute inset-0 w-2 h-2 rounded-full animate-ping"
+                              style={{ background: project.accent, opacity: 0.4 }}
+                            />
+                          </div>
+                          <p className="text-text-primary text-sm font-semibold">Production Ready</p>
+                        </div>
                       </div>
-                    </div>
+                    </motion.div>
                   </div>
                 </div>
               </div>

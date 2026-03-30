@@ -3,187 +3,16 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LayoutGrid, List, ChevronRight, Github, ExternalLink, Tag } from "lucide-react";
+import Image from "next/image";
 import { projects, projectCategories, type Project } from "@/data/portfolio";
 import SectionTitle from "@/components/ui/SectionTitle";
 import ProjectModal from "@/components/ui/ProjectModal";
 import { ProjectsGridSkeleton, ProjectsListSkeleton } from "@/components/ui/Skeleton";
 import clsx from "clsx";
 
-// SVG thumbnails — category/project specific abstract visualizations
-function ProjectThumbnail({ project }: { project: Project }) {
-  const c = project.accent;
-
-  if (project.id === "plant-disease") {
-    // Neural activation grid
-    return (
-      <svg viewBox="0 0 320 120" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-        <rect width="320" height="120" fill={`${c}0a`} />
-        {Array.from({ length: 5 }).map((_, row) =>
-          Array.from({ length: 10 }).map((_, col) => {
-            const opacity = Math.random() * 0.7 + 0.15;
-            return (
-              <rect
-                key={`${row}-${col}`}
-                x={col * 32 + 4}
-                y={row * 22 + 8}
-                width="26"
-                height="16"
-                rx="3"
-                fill={c}
-                opacity={opacity}
-              />
-            );
-          })
-        )}
-        {/* Leaf silhouette overlay */}
-        <ellipse cx="160" cy="60" rx="45" ry="30" fill={`${c}18`} stroke={c} strokeWidth="1.5" strokeOpacity="0.6" />
-        <path d="M160 30 Q185 60 160 90 Q135 60 160 30Z" fill={`${c}20`} stroke={c} strokeWidth="1" strokeOpacity="0.5" />
-      </svg>
-    );
-  }
-
-  if (project.id === "crypto-volatility") {
-    // Candlestick chart
-    const candles = [18, 35, 22, 55, 40, 70, 48, 85, 60, 95, 72, 88, 65, 78, 55];
-    return (
-      <svg viewBox="0 0 320 120" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-        <rect width="320" height="120" fill={`${c}08`} />
-        {/* Grid lines */}
-        {[30, 60, 90].map((y) => (
-          <line key={y} x1="10" y1={y} x2="310" y2={y} stroke={c} strokeWidth="0.5" strokeOpacity="0.15" />
-        ))}
-        {/* Candlesticks */}
-        {candles.map((h, i) => {
-          const x = i * 20 + 12;
-          const top = 110 - h;
-          const bullish = i % 3 !== 1;
-          return (
-            <g key={i}>
-              <line x1={x + 5} y1={top - 6} x2={x + 5} y2={top} stroke={bullish ? c : "#f472b6"} strokeWidth="1.5" strokeOpacity="0.8" />
-              <rect x={x} y={top} width="10" height={Math.max(h * 0.4, 4)} rx="1" fill={bullish ? c : "#f472b6"} opacity="0.7" />
-              <line x1={x + 5} y1={top + h * 0.4} x2={x + 5} y2={top + h * 0.4 + 8} stroke={bullish ? c : "#f472b6"} strokeWidth="1.5" strokeOpacity="0.8" />
-            </g>
-          );
-        })}
-        {/* Forecast line */}
-        <polyline
-          points={candles.map((h, i) => `${i * 20 + 17},${110 - h}`).join(" ")}
-          fill="none"
-          stroke={c}
-          strokeWidth="2"
-          strokeOpacity="0.5"
-          strokeDasharray="4 3"
-        />
-      </svg>
-    );
-  }
-
-  if (project.id === "movie-recommendation") {
-    // Film strip + rating stars grid
-    return (
-      <svg viewBox="0 0 320 120" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-        <rect width="320" height="120" fill={`${c}08`} />
-        {/* Film strip frames */}
-        {[0, 1, 2, 3, 4].map((i) => (
-          <g key={i}>
-            <rect x={i * 64 + 10} y="15" width="54" height="40" rx="3" fill={`${c}15`} stroke={c} strokeWidth="1" strokeOpacity="0.4" />
-            <rect x={i * 64 + 14} y="18" width="8" height="5" rx="1" fill={c} opacity="0.4" />
-            <rect x={i * 64 + 52} y="18" width="8" height="5" rx="1" fill={c} opacity="0.4" />
-            <rect x={i * 64 + 14} y="47" width="8" height="5" rx="1" fill={c} opacity="0.4" />
-            <rect x={i * 64 + 52} y="47" width="8" height="5" rx="1" fill={c} opacity="0.4" />
-          </g>
-        ))}
-        {/* Star ratings */}
-        {[0, 1, 2, 3].map((row) => (
-          <g key={row}>
-            {[0, 1, 2, 3, 4].map((star) => (
-              <text
-                key={star}
-                x={star * 16 + 60 * row + 12}
-                y="100"
-                fontSize="12"
-                fill={c}
-                opacity={star < (3 - row + 4) % 5 + 2 ? 0.8 : 0.2}
-              >★</text>
-            ))}
-          </g>
-        ))}
-      </svg>
-    );
-  }
-
-  if (project.id === "aqi-prediction") {
-    // Waveform / bar chart
-    const bars = [30, 55, 40, 75, 60, 85, 45, 70, 50, 90, 65, 55, 80, 45, 60, 35];
-    return (
-      <svg viewBox="0 0 320 120" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-        <rect width="320" height="120" fill={`${c}08`} />
-        {/* Horizontal grid */}
-        {[30, 60, 90].map((y) => (
-          <line key={y} x1="10" y1={y} x2="310" y2={y} stroke={c} strokeWidth="0.5" strokeOpacity="0.12" />
-        ))}
-        {bars.map((h, i) => (
-          <g key={i}>
-            <rect
-              x={i * 19 + 8}
-              y={110 - h}
-              width="14"
-              height={h}
-              rx="2"
-              fill={c}
-              opacity={0.3 + (i / bars.length) * 0.5}
-            />
-          </g>
-        ))}
-        {/* Trend line */}
-        <polyline
-          points={bars.map((h, i) => `${i * 19 + 15},${110 - h}`).join(" ")}
-          fill="none"
-          stroke={c}
-          strokeWidth="2"
-          strokeOpacity="0.7"
-        />
-        {/* AQI label */}
-        <text x="280" y="25" fontSize="10" fill={c} opacity="0.6" fontFamily="monospace">AQI</text>
-      </svg>
-    );
-  }
-
-  if (project.id === "inventory-management") {
-    // Table / dashboard UI mockup
-    return (
-      <svg viewBox="0 0 320 120" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-        <rect width="320" height="120" fill={`${c}08`} />
-        {/* Sidebar */}
-        <rect x="0" y="0" width="56" height="120" fill={`${c}12`} />
-        {[20, 40, 60, 80, 100].map((y) => (
-          <rect key={y} x="8" y={y} width="40" height="10" rx="3" fill={c} opacity="0.25" />
-        ))}
-        {/* Table header */}
-        <rect x="64" y="12" width="248" height="14" rx="3" fill={c} opacity="0.3" />
-        {/* Table rows */}
-        {[32, 50, 68, 86, 104].map((y, i) => (
-          <g key={y}>
-            <rect x="64" y={y} width="248" height="12" rx="2" fill={c} opacity={i % 2 === 0 ? 0.08 : 0.04} />
-            <rect x="68" y={y + 2} width="60" height="8" rx="2" fill={c} opacity="0.2" />
-            <rect x="140" y={y + 2} width="40" height="8" rx="2" fill={c} opacity="0.15" />
-            <rect x="260" y={y + 2} width="40" height="8" rx="2" fill={c} opacity="0.3" />
-          </g>
-        ))}
-      </svg>
-    );
-  }
-
-  // Fallback generic visualization
-  return (
-    <svg viewBox="0 0 320 120" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-      <rect width="320" height="120" fill={`${c}0a`} />
-      <circle cx="160" cy="60" r="40" fill={`${c}18`} stroke={c} strokeWidth="1.5" strokeOpacity="0.4" />
-    </svg>
-  );
-}
-
 function ProjectCardGrid({ project, index, onOpen }: { project: Project; index: number; onOpen: () => void }) {
+  const [isHovered, setIsHovered] = useState(false);
+  
   return (
     <motion.div
       layout
@@ -193,15 +22,39 @@ function ProjectCardGrid({ project, index, onOpen }: { project: Project; index: 
       transition={{ duration: 0.4, delay: index * 0.07, ease: [0.16, 1, 0.3, 1] }}
       whileHover={{ y: -4 }}
       onClick={onOpen}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       className="group rounded-2xl border border-border-subtle bg-bg-card flex flex-col overflow-hidden transition-all cursor-pointer"
       style={{ "--accent": project.accent } as React.CSSProperties}
     >
       {/* Thumbnail */}
       <div
-        className="relative overflow-hidden h-32 w-full flex-shrink-0 border-b border-border-subtle"
-        style={{ background: `${project.accent}08` }}
+        className="relative overflow-hidden h-48 w-full flex-shrink-0 border-b border-border-subtle bg-bg-secondary"
       >
-        <ProjectThumbnail project={project} />
+        {/* Main Image */}
+        {project.thumbnail && (
+          <Image
+            src={project.thumbnail}
+            alt={project.title}
+            fill
+            className="object-cover transition-opacity duration-500"
+            style={{ opacity: isHovered && project.gif ? 0 : 1 }}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          />
+        )}
+        
+        {/* GIF Preview on Hover */}
+        {project.gif && (
+          <Image
+            src={project.gif}
+            alt={`${project.title} demo`}
+            fill
+            className="object-cover transition-opacity duration-500"
+            style={{ opacity: isHovered ? 1 : 0 }}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          />
+        )}
+        
         {/* Hover overlay */}
         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-bg-primary/50 backdrop-blur-[2px]">
           <span className="text-xs font-mono text-text-primary border border-border-subtle bg-bg-card px-3 py-1.5 rounded-full">
@@ -270,8 +123,16 @@ function ProjectCardList({ project, index, onOpen }: { project: Project; index: 
     >
       <div className="flex flex-col sm:flex-row">
         {/* Thumbnail strip */}
-        <div className="sm:w-32 h-20 sm:h-auto overflow-hidden flex-shrink-0 border-b sm:border-b-0 sm:border-r border-border-subtle" style={{ background: `${project.accent}08` }}>
-          <ProjectThumbnail project={project} />
+        <div className="relative sm:w-40 h-24 sm:h-auto overflow-hidden flex-shrink-0 border-b sm:border-b-0 sm:border-r border-border-subtle bg-bg-secondary">
+          {project.thumbnail && (
+            <Image
+              src={project.thumbnail}
+              alt={project.title}
+              fill
+              className="object-cover"
+              sizes="(max-width: 640px) 100vw, 160px"
+            />
+          )}
         </div>
 
         <div className="p-4 flex flex-col gap-2.5 flex-1 min-w-0">

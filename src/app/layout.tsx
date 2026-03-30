@@ -17,6 +17,15 @@ export const metadata: Metadata = {
     "Data Science",
   ],
   authors: [{ name: "Syed Shayan Arshad" }],
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico', sizes: 'any' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+  },
   openGraph: {
     title: "Syed Shayan Arshad — AI / ML Engineer",
     description:

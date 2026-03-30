@@ -27,6 +27,11 @@ export type Project = {
   github?: string;
   demo?: string;
   accent: string;
+  // Visual preview fields
+  thumbnail?: string;     // Main card image
+  images?: string[];      // Carousel images for modal
+  gif?: string;          // Animated GIF for hover preview
+  video?: string;        // Video demo URL (YouTube/Loom embed)
 };
 
 export const projects: Project[] = [
@@ -50,6 +55,16 @@ export const projects: Project[] = [
     ],
     deployment: "Streamlit",
     accent: "#f472b6",
+    thumbnail: "/inventory/thumbnail.png",
+    images: [
+      "/inventory/1.png",
+      "/inventory/2.png",
+      "/inventory/3.png",
+      "/inventory/4.png",
+      "/inventory/5.png",
+      "/inventory/6.png",
+      "/inventory/7.png",
+    ],
   },
   {
     id: "crypto-volatility",
@@ -72,6 +87,16 @@ export const projects: Project[] = [
     ],
     deployment: "Streamlit + Hugging Face",
     accent: "#8b5cf6",
+    thumbnail: "/inventory/thumbnail.png",
+    images: [
+      "/inventory/1.png",
+      "/inventory/2.png",
+      "/inventory/3.png",
+      "/inventory/4.png",
+      "/inventory/5.png",
+      "/inventory/6.png",
+      "/inventory/7.png",
+    ],
   },
   {
     id: "movie-recommendation",
@@ -93,6 +118,16 @@ export const projects: Project[] = [
     ],
     deployment: "Gradio",
     accent: "#a78bfa",
+    thumbnail: "/inventory/thumbnail.png",
+    images: [
+      "/inventory/1.png",
+      "/inventory/2.png",
+      "/inventory/3.png",
+      "/inventory/4.png",
+      "/inventory/5.png",
+      "/inventory/6.png",
+      "/inventory/7.png",
+    ],
   },
   {
     id: "aqi-prediction",
@@ -114,6 +149,16 @@ export const projects: Project[] = [
       "K-Means revealed distinct pollution clusters by geography and season",
     ],
     accent: "#10b981",
+    thumbnail: "/inventory/thumbnail.png",
+    images: [
+      "/inventory/1.png",
+      "/inventory/2.png",
+      "/inventory/3.png",
+      "/inventory/4.png",
+      "/inventory/5.png",
+      "/inventory/6.png",
+      "/inventory/7.png",
+    ],
   },
   {
     id: "inventory-management",
@@ -135,6 +180,16 @@ export const projects: Project[] = [
       "Single dashboard for purchasing, sales, and reporting workflows",
     ],
     accent: "#f59e0b",
+    thumbnail: "/inventory/thumbnail.png",
+    images: [
+      "/inventory/1.png",
+      "/inventory/2.png",
+      "/inventory/3.png",
+      "/inventory/4.png",
+      "/inventory/5.png",
+      "/inventory/6.png",
+      "/inventory/7.png",
+    ],
   },
 ];
 
