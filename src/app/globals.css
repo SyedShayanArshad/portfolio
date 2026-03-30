@@ -10,12 +10,12 @@
   --font-mono: 'JetBrains Mono', monospace;
 
   /* Dark theme (default) */
-  --bg-primary:   #08080d;
-  --bg-secondary: #0d0c16;
-  --bg-card:      #110f1c;
-  --border-subtle: #1c1b2a;
-  --text-primary: #f0eef8;
-  --text-muted:   #8a87a0;
+  --bg-primary:   #0b0f14;
+  --bg-secondary: #11161d;
+  --bg-card:      #151b23;
+  --border-subtle:#1f2630;
+  --text-primary: #e6edf3;
+  --text-muted:   #9da7b3;
 
   /* Accent system — violet primary, rose secondary */
   --accent-violet: #8b5cf6;
