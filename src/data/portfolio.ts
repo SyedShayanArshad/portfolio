@@ -66,7 +66,7 @@ export const projects: Project[] = [
     deployment: "Vercel + Render",
     accent: "#0ea5e9", // Modern vibrant cyan/blue accent color
     thumbnail: "/opply/thumbnail.png",
-    images: ["/opply/1.png", "/opply/2.png", "/opply/3.png"],
+    images: ["/opply/1.png", "/opply/2.png", "/opply/3.png","/opply/3.png"],
   },
   {
     id: "plant-disease",
