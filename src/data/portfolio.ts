@@ -7,9 +7,9 @@ export const personalInfo = {
   github: "https://github.com/syedshayanarshad",
   location: "Lahore, Pakistan",
   stats: [
-    { label: "Projects", value: 5, suffix: "+", decimals: 0 },
+    { label: "Projects", value: 6, suffix: "+", decimals: 0 },
     { label: "Internships", value: 2, suffix: "", decimals: 0 },
-    { label: "Technologies", value: 20, suffix: "+", decimals: 0 },
+    { label: "Technologies", value: 25, suffix: "+", decimals: 0 },
     { label: "Years", value: 2, suffix: "+", decimals: 0 },
   ],
 };
@@ -28,13 +28,46 @@ export type Project = {
   demo?: string;
   accent: string;
   // Visual preview fields
-  thumbnail?: string;     // Main card image
-  images?: string[];      // Carousel images for modal
-  gif?: string;          // Animated GIF for hover preview
-  video?: string;        // Video demo URL (YouTube/Loom embed)
+  thumbnail?: string; // Main card image
+  images?: string[]; // Carousel images for modal
+  gif?: string; // Animated GIF for hover preview
+  video?: string; // Video demo URL (YouTube/Loom embed)
 };
 
 export const projects: Project[] = [
+  {
+    id: "opply-ai",
+    title: "Opply AI — Student Email Assistant",
+    description:
+      "An AI-powered SaaS assistant that integrates with Gmail and WhatsApp to extract, rank, and track academic and professional opportunities.",
+    category: "full-stack",
+    categoryLabel: "Full Stack",
+    tech: [
+      "React",
+      "FastAPI",
+      "LangChain",
+      "Mistral AI",
+      "Twilio API",
+      "SQLModel",
+      "WebSockets",
+    ],
+    highlights: [
+      "Direct Gmail integration for automated email processing and synchronization",
+      "Manual batch upload parsing with real-time progress tracking via WebSockets",
+      "LangChain & Mistral AI tool-calling pipelines for structured data extraction",
+      "Profile fit ranking system matching student profiles to opportunity eligibility",
+      "Automated high-priority opportunity alerts pushed to WhatsApp via Twilio",
+    ],
+    outcomes: [
+      "Streamlined opportunity discovery by transforming unstructured emails into structured pipelines",
+      "Achieved zero-hallucination data extraction using structured LLM tool-calling schemas",
+      "Delivered a seamless, interactive user experience with fast asynchronous backend jobs",
+    ],
+    deployment: "Vercel + Render",
+    accent: "#0ea5e9", // Modern vibrant cyan/blue accent color
+    thumbnail: "/opply/thumbnail.png",
+    images: ["/opply/1.png", "/opply/2.png", "/opply/3.png"],
+  },
   {
     id: "plant-disease",
     title: "Plant Disease Classification",
@@ -42,7 +75,14 @@ export const projects: Project[] = [
       "Deep learning system for plant disease detection using transfer learning, with visual interpretability and production-ready deployment.",
     category: "deep-learning",
     categoryLabel: "Deep Learning",
-    tech: ["Python", "TensorFlow", "VGG16", "Inception", "Grad-CAM", "Streamlit"],
+    tech: [
+      "Python",
+      "TensorFlow",
+      "VGG16",
+      "Inception",
+      "Grad-CAM",
+      "Streamlit",
+    ],
     highlights: [
       "CNN model using VGG16 + Inception architecture with transfer learning",
       "Grad-CAM visual interpretability for explainable AI decisions",
@@ -56,10 +96,7 @@ export const projects: Project[] = [
     deployment: "Streamlit",
     accent: "#f472b6",
     thumbnail: "/plant/thumbnail.png",
-    images: [
-      "/plant/1.png",
-      "/plant/2.png",
-    ],
+    images: ["/plant/1.png", "/plant/2.png"],
   },
   {
     id: "crypto-volatility",
@@ -83,11 +120,7 @@ export const projects: Project[] = [
     deployment: "Streamlit + Hugging Face",
     accent: "#8b5cf6",
     thumbnail: "/crypto/thumbnail.png",
-    images: [
-      "/crypto/1.png",
-      "/crypto/2.png",
-      "/crypto/3.png",
-    ],
+    images: ["/crypto/1.png", "/crypto/2.png", "/crypto/3.png"],
   },
   {
     id: "movie-recommendation",
@@ -110,10 +143,7 @@ export const projects: Project[] = [
     deployment: "Gradio",
     accent: "#a78bfa",
     thumbnail: "/movie/thumbnail.png",
-    images: [
-      "/movie/1.png",
-      "/movie/2.png",
-    ],
+    images: ["/movie/1.png", "/movie/2.png"],
   },
   {
     id: "aqi-prediction",
@@ -122,7 +152,15 @@ export const projects: Project[] = [
       "Comprehensive air quality analysis system trained on 10,000+ records with ensemble ML models and unsupervised pattern discovery.",
     category: "machine-learning",
     categoryLabel: "Machine Learning",
-    tech: ["Python", "SVM", "KNN", "Random Forest", "PCA", "K-Means", "Scikit-learn"],
+    tech: [
+      "Python",
+      "SVM",
+      "KNN",
+      "Random Forest",
+      "PCA",
+      "K-Means",
+      "Scikit-learn",
+    ],
     highlights: [
       "Analyzed 10,000+ air quality records across multiple cities",
       "Ensemble models: SVM, KNN, Random Forest with cross-validation",
@@ -206,12 +244,33 @@ export const skillCategories: SkillCategory[] = [
     title: "ML & Deep Learning",
     accent: "#f472b6",
     skills: [
-      { name: "TensorFlow", proficiency: 90, category: "ml-dl", color: "#FF6F00" },
+      {
+        name: "TensorFlow",
+        proficiency: 90,
+        category: "ml-dl",
+        color: "#FF6F00",
+      },
       { name: "PyTorch", proficiency: 85, category: "ml-dl", color: "#EE4C2C" },
-      { name: "Scikit-learn", proficiency: 95, category: "ml-dl", color: "#F7931E" },
+      {
+        name: "Scikit-learn",
+        proficiency: 95,
+        category: "ml-dl",
+        color: "#F7931E",
+      },
       { name: "Keras", proficiency: 90, category: "ml-dl", color: "#D00000" },
-      { name: "Hugging Face", proficiency: 80, category: "ml-dl", color: "#FFD21E" },
+      {
+        name: "Hugging Face",
+        proficiency: 80,
+        category: "ml-dl",
+        color: "#FFD21E",
+      },
       { name: "OpenCV", proficiency: 85, category: "ml-dl", color: "#5C3EE8" },
+      {
+        name: "LangChain",
+        proficiency: 85,
+        category: "ml-dl",
+        color: "#121212",
+      },
     ],
   },
   {
@@ -219,12 +278,42 @@ export const skillCategories: SkillCategory[] = [
     title: "Data Science",
     accent: "#10b981",
     skills: [
-      { name: "Python", proficiency: 95, category: "data-science", color: "#3776AB" },
-      { name: "Pandas", proficiency: 95, category: "data-science", color: "#150458" },
-      { name: "NumPy", proficiency: 90, category: "data-science", color: "#013243" },
-      { name: "PySpark", proficiency: 80, category: "data-science", color: "#E25A1C" },
-      { name: "SQL", proficiency: 85, category: "data-science", color: "#00758F" },
-      { name: "Jupyter", proficiency: 90, category: "data-science", color: "#F37626" },
+      {
+        name: "Python",
+        proficiency: 95,
+        category: "data-science",
+        color: "#3776AB",
+      },
+      {
+        name: "Pandas",
+        proficiency: 95,
+        category: "data-science",
+        color: "#150458",
+      },
+      {
+        name: "NumPy",
+        proficiency: 90,
+        category: "data-science",
+        color: "#013243",
+      },
+      {
+        name: "PySpark",
+        proficiency: 80,
+        category: "data-science",
+        color: "#E25A1C",
+      },
+      {
+        name: "SQL",
+        proficiency: 85,
+        category: "data-science",
+        color: "#00758F",
+      },
+      {
+        name: "Jupyter",
+        proficiency: 90,
+        category: "data-science",
+        color: "#F37626",
+      },
     ],
   },
   {
@@ -232,12 +321,42 @@ export const skillCategories: SkillCategory[] = [
     title: "Deployment & Tools",
     accent: "#8b5cf6",
     skills: [
-      { name: "Streamlit", proficiency: 90, category: "deployment", color: "#FF4B4B" },
-      { name: "FastAPI", proficiency: 85, category: "deployment", color: "#009688" },
-      { name: "Docker", proficiency: 80, category: "deployment", color: "#2496ED" },
-      { name: "Git", proficiency: 90, category: "deployment", color: "#F05032" },
-      { name: "AWS", proficiency: 70, category: "deployment", color: "#FF9900" },
-      { name: "Linux", proficiency: 85, category: "deployment", color: "#FCC624" },
+      {
+        name: "Streamlit",
+        proficiency: 90,
+        category: "deployment",
+        color: "#FF4B4B",
+      },
+      {
+        name: "FastAPI",
+        proficiency: 85,
+        category: "deployment",
+        color: "#009688",
+      },
+      {
+        name: "Docker",
+        proficiency: 80,
+        category: "deployment",
+        color: "#2496ED",
+      },
+      {
+        name: "Git",
+        proficiency: 90,
+        category: "deployment",
+        color: "#F05032",
+      },
+      {
+        name: "AWS",
+        proficiency: 70,
+        category: "deployment",
+        color: "#FF9900",
+      },
+      {
+        name: "Linux",
+        proficiency: 85,
+        category: "deployment",
+        color: "#FCC624",
+      },
     ],
   },
 ];
